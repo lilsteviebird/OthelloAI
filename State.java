@@ -6,14 +6,16 @@ public class State {
 	public int minimax;
 	//public State parent;
 	public State minMaxedChild;
-	public boolean terminal;
+	public boolean terminalAI, terminalPlayer; //should have terminalAI and terminalPlayer
 	public ArrayList<State> childStates;
 	
 	public State(Space[][] board, int minimax) {
 		this.board = board;
 		//this.parent = parent;
 		this.minimax = minimax;
-		this.terminal = false;
+		minMaxedChild = null;
+		terminalAI = false;
+		terminalPlayer = false;
 		boardWidth = board.length;
 		childStates = new ArrayList<State>();
 	}
