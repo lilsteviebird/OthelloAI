@@ -132,10 +132,10 @@ public class State {
 	//flipPieces returns a State
 	
 	public String opponentCharacter(String given) {
-		if(given.equals("X")) {
-			return "O";
+		if(given.equals("x")) {
+			return "o";
 		}
-		return "X";
+		return "x";
 	}
 
 	public boolean checkValidity(int row, int col, String given) {

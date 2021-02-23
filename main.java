@@ -6,21 +6,38 @@ public class main {
 		Scanner scanner = new Scanner(System.in); 
 		  
         // String input 
-        char r, col;
-        int row;
+        String input = null;
+        int row, col;
 		player = "x";
 		AI = "o";
-		//State initial = initialState(4,4);
 		boolean playerTurn = true;
+		
+		
+//		System.out.println("Choose your Game:");
+//		System.out.println("1. Small 4x4 Reversi");
+//		System.out.println("2. Standard 8x8 Reversi");
+//		Game g1 = null;
+//		int gameType = scanner.nextInt();
+//		if(gameType == 1) {
+//			g1 = new Game(player, AI, 4);
+//		} else if(gameType == 2) {
+//			g1 = new Game(player, AI, 8);
+//		}
 		Game g1 = new Game(player, AI, 4);
 		
 		while(true) {
 			//have a if statement that determines if no more moves are possible
+			//if currentState terminalAI and terminalPlayer are both true
+			if(g1.currentState.terminalAI && g1.currentState.terminalPlayer) {
+				break;
+			}
 			if(playerTurn) {
 				System.out.println("What would you like your next move to be: ");
-				r = scanner.next().charAt(0);
-				row = letterToNumber(r);
-				col = scanner.next().charAt(1);
+				input = scanner.next();
+				col = letterToNumber(input.charAt(0));
+				row = Character.getNumericValue(input.charAt(1));
+				
+				System.out.println(col+" "+row);
 				playerMove(g1, row, col);
 				playerTurn = false;
 			} else {
@@ -33,9 +50,12 @@ public class main {
 		
 	}
 	public static void playerMove(Game g, int moveRow, int moveCol) {
+		System.out.println("before validity check");
 		if(g.currentState.checkValidity(moveRow, moveCol, player)) {
+			System.out.println("validity check");
 			g.updateBoardPlayer(moveRow, moveCol, player);
 		}
+		System.out.println("after validity check");
 	}
 	public static void AIMove(Game g) {
 		g.updateBoardAI();
@@ -49,13 +69,13 @@ public class main {
 	// returns new board state
 	
 	
-	public static int letterToNumber(char row) {
-		int r = -1;
+	public static int letterToNumber(char col) {
+		int c = -1;
 		char[] letters = {'a','b','c','d','e','f','g','h'};
 		for(char l: letters) {
-			r++;
-			if(row == l) {
-				return r;
+			c++;
+			if(col == l) {
+				return c;
 			}
 		}
 		return -1;

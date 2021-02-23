@@ -14,17 +14,21 @@ public class Game {
 	
 	public void updateBoardPlayer(int row, int col, String color) {
 		currentState.board[row][col].setColor(color);
-		//currentState = flipPieces(row,col,color); //looks for any sandwich in direction and flips them
+		currentState = currentState.flipPieces(row,col,color); //looks for any sandwich in direction and flips them
 		currentState.printState();
 	}
 	public void updateBoardAI() {
-		//childState = findBestChild(currentState);
-		//if(childState != null) {
-		//	currentState = childState;
-		//else currentState = minimaxDecision(currentState);
+		childState = findBestChild(currentState);
+		if(childState != null) {
+			currentState = childState;
+		} else {
+			currentState = minimaxDecision(currentState);
+		}
 		currentState.printState();
 	}
-	//findBestChild(currentState
+	public State findBestChild(State currentState) {
+		return currentState.minMaxedChild;
+	}
 	//a function that will be given a state and return its minMaxedChild for next move
 
 	public State minimaxDecision(State s) {
@@ -101,7 +105,7 @@ public class Game {
 				if(s.checkValidity(r,c,AI)) {
 					childState = currentState;
 					childState.board[r][c].setColor(AI);
-					//childState = flipPieces(row,col,color);
+					childState = childState.flipPieces(r,c,AI);
 					s.childStates.add(childState);
 				}
 			}
@@ -115,7 +119,7 @@ public class Game {
 				if(s.checkValidity(r,c,player)) {
 					childState = currentState;
 					childState.board[r][c].setColor(player);
-					//childState = flipPieces(row,col,color);
+					childState = childState.flipPieces(r,c,player);
 					s.childStates.add(childState);
 				}
 			}
@@ -126,8 +130,6 @@ public class Game {
 		}
 		return s.childStates;
 	}
-	
-	
 	
 	public int utility(State s) {
 		int xs = 0, os = 0;
