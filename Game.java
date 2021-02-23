@@ -39,35 +39,92 @@ public class Game {
 	}
 	
 	public State minValue (State s) {
-		if(s.terminal) {
+		if(s.terminalAI && s.terminalPlayer) { //should check if both booleans are true
 			s.minimax = utility(s);
 			return s;
 		}
 		s.minimax = 100000;
 		s.childStates = getChildStatesMin(s);
-		for(State child: s.childStates) {
-			if(maxValue(child).minimax < s.minimax) {
-				s.minMaxedChild = child;
-				s.minimax = child.minimax;
+		
+		if(s.childStates.isEmpty()) {
+			s.terminalAI = true; //not yet. Need to make sure neither participant can make a move
+			//should set AI boolean true
+			s.childStates = getChildStatesMax(s);
+			for(State child: s.childStates) {
+				if(minValue(child).minimax > s.minimax) {
+					s.minMaxedChild = child;
+					s.minimax = child.minimax;
+				}
+			}
+		} else {
+			for(State child: s.childStates) {
+				if(maxValue(child).minimax < s.minimax) {
+					s.minMaxedChild = child;
+					s.minimax = child.minimax;
+				}
 			}
 		}
 		return s;
 	}
 	
 	public State maxValue (State s) {
-		if(s.terminal) {
+		if(s.terminalAI && s.terminalPlayer) { //should check if both booleans are true
 			s.minimax = utility(s);
 			return s;
 		}
 		s.minimax = -100000;
 		s.childStates = getChildStatesMax(s);
-		for(State child: s.childStates) {
-			if(minValue(child).minimax > s.minimax) {
-				s.minMaxedChild = child;
-				s.minimax = child.minimax;
+		
+		if(s.childStates.isEmpty()) {
+			s.childStates = getChildStatesMin(s);
+			for(State child: s.childStates) {
+				if(maxValue(child).minimax < s.minimax) {
+					s.minMaxedChild = child;
+					s.minimax = child.minimax;
+				}
+			}
+		} else {
+			for(State child: s.childStates) {
+				if(minValue(child).minimax > s.minimax) {
+					s.minMaxedChild = child;
+					s.minimax = child.minimax;
+				}
 			}
 		}
 		return s;
+	}
+	
+	public ArrayList<State> getChildStatesMin(State s){
+		
+		for(int r = 0; r < boardWidth; r++) {
+			for(int c = 0; c < boardWidth; c++) {
+				if(s.checkValidity(r,c,AI)) {
+					childState = currentState;
+					childState.board[r][c].setColor(AI);
+					//childState = flipPieces(row,col,color);
+					s.childStates.add(childState);
+				}
+			}
+		}
+		return s.childStates;
+	}
+	public ArrayList<State> getChildStatesMax(State s){
+		
+		for(int r = 0; r < boardWidth; r++) {
+			for(int c = 0; c < boardWidth; c++) {
+				if(s.checkValidity(r,c,player)) {
+					childState = currentState;
+					childState.board[r][c].setColor(player);
+					//childState = flipPieces(row,col,color);
+					s.childStates.add(childState);
+				}
+			}
+		}
+		if(s.childStates.isEmpty()) {
+			s.terminalPlayer = true; //not yet. Need to make sure neither participant can make a move
+			//should set player boolean true
+		}
+		return s.childStates;
 	}
 	
 	
@@ -89,41 +146,6 @@ public class Game {
 		} else { //player=o,AI=x
 			return xs-os; //minimax value
 		}
-	}
-	
-	public ArrayList<State> getChildStatesMin(State s){
-		
-		for(int r = 0; r < boardWidth; r++) {
-			for(int c = 0; c < boardWidth; c++) {
-				if(s.checkValidity(r,c,AI)) {
-					childState = currentState;
-					childState.board[r][c].setColor(AI);
-					//childState = flipPieces(row,col,color);
-					s.childStates.add(childState);
-				}
-			}
-		}
-		if(s.childStates.isEmpty()) {
-			s.terminal = true;
-		}
-		return s.childStates;
-	}
-	public ArrayList<State> getChildStatesMax(State s){
-		
-		for(int r = 0; r < boardWidth; r++) {
-			for(int c = 0; c < boardWidth; c++) {
-				if(s.checkValidity(r,c,player)) {
-					childState = currentState;
-					childState.board[r][c].setColor(player);
-					//childState = flipPieces(row,col,color);
-					s.childStates.add(childState);
-				}
-			}
-		}
-		if(s.childStates.isEmpty()) {
-			s.terminal = true;
-		}
-		return s.childStates;
 	}
 	
 	public State initialState(int numRows, int numCols){
