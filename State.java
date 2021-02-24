@@ -32,26 +32,26 @@ public class State {
 		if(checkRight(row, col, given)) {
 			Point end = flipRight(row, col, given);
 			for(int i = col; i <= end.getY(); i++) {
-				returnMe.board[row][i].setColor(opp);
+				returnMe.board[row][i].setColor(given);
 			}
 		}
 		if(checkLeft(row, col, given)) {
 			Point end = flipLeft(row, col, given);
 			for(int i = col; i >= end.getY(); i--) {
-				returnMe.board[row][i].setColor(opp);
+				returnMe.board[row][i].setColor(given);
 			}
 			
 		}
 		if(checkUp(row, col, given)) {
 			Point end = flipUp(row, col, given);
 			for(int i = row; i >= end.getX(); i--) {
-				returnMe.board[i][col].setColor(opp);
+				returnMe.board[i][col].setColor(given);
 			}
 		}
 		if(checkDown(row, col, given)) {
 			Point end = flipDown(row, col, given);
 			for(int i = row; i <= end.getX(); i++) {
-				returnMe.board[i][col].setColor(opp);
+				returnMe.board[i][col].setColor(given);
 			}
 		}
 		if(checkDiagTR(row, col, given)) {
@@ -59,7 +59,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol].setColor(given);
 				tempRow--;
 				tempCol++;
 			}
@@ -69,7 +69,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol].setColor(given);
 				tempRow--;
 				tempCol--;
 			}
@@ -79,7 +79,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol].setColor(given);
 				tempRow++;
 				tempCol++;
 			}
@@ -89,7 +89,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol].setColor(given);
 				tempRow++;
 				tempCol--;
 			}
