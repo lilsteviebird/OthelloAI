@@ -1,6 +1,6 @@
 import java.util.Scanner;
 public class main {
-	static String player, AI;
+	static char player, AI;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(System.in); 
@@ -8,8 +8,8 @@ public class main {
         // String input 
         String input = null;
         int row, col;
-		player = "x";
-		AI = "o";
+		player = 'x';
+		AI = 'o';
 		boolean playerTurn = true;
 		
 		
@@ -35,13 +35,17 @@ public class main {
 				System.out.println("What would you like your next move to be: ");
 				input = scanner.next();
 				col = letterToNumber(input.charAt(0));
-				row = Character.getNumericValue(input.charAt(1));
+				row = Character.getNumericValue(input.charAt(1))-1;
 				
-				System.out.println(col+" "+row);
+				System.out.println(input.charAt(0)+" "+row);
 				playerMove(g1, row, col);
 				playerTurn = false;
+				System.out.println("AI's Turn");
+				System.out.println("");
+				System.out.println("");
 			} else {
 				AIMove(g1);
+				playerTurn = true;
 			}
 		}
 		
@@ -50,12 +54,10 @@ public class main {
 		
 	}
 	public static void playerMove(Game g, int moveRow, int moveCol) {
-		System.out.println("before validity check");
+		System.out.println("validity check");
 		if(g.currentState.checkValidity(moveRow, moveCol, player)) {
-			System.out.println("validity check");
 			g.updateBoardPlayer(moveRow, moveCol, player);
 		}
-		System.out.println("after validity check");
 	}
 	public static void AIMove(Game g) {
 		g.updateBoardAI();
