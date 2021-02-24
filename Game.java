@@ -5,6 +5,7 @@ public class Game {
 	public State currentState;
 	public State childState;
 	public int tempMinimax;
+//	public ArrayList<State> childStates;
 	
 	public Game(char player, char AI, int boardWidth) {
 		this.player = player;
@@ -20,100 +21,142 @@ public class Game {
 		currentState.printState();
 	}
 	public void updateBoardAI() {
-		childState = findBestChild(currentState);
-		if(childState != null) {
-			currentState = childState;
+		//currentState = minimaxDecision(currentState);
+		
+		if(findBestChild(currentState) != null) {
+			System.out.println("best child");
+			currentState = findBestChild(currentState);
 		} else {
+			System.out.println("minimaxed child");
 			currentState = minimaxDecision(currentState);
 		}
-		System.out.println("program go brrr");
+		System.out.println("Current State: \n");
 		currentState.printState();
 	}
-	public State findBestChild(State currentState) {
-		return currentState.minMaxedChild;
+	public State findBestChild(State s) {
+		return s.minMaxedChild;
 	}
-	//a function that will be given a state and return its minMaxedChild for next move
 
+	//functions as maxValue but is the first step and returns a state instead of the minimax utility
 	public State minimaxDecision(State s) {
-		System.out.println("CurrentState: ");
-		s.printState();
-		s.childStates = getChildStatesMax(s);
+		
+		s.minimax = -10000;
+		s.childStates = getAIChildStates(s);
 		for(State child: s.childStates) {
-			if(minValue(child).minimax > s.minimax) {
+			
+//			System.out.println("Possible Move by AI: \n");
+//			child.printState();
+			
+			child.minimax = minValue(child);
+			
+//			System.out.println(child.minimax+" \n");
+			
+			if(child.minimax > s.minimax) {
 				s.minMaxedChild = child;
 				s.minimax = child.minimax;
 			}
+			
 		}
-		return s.minMaxedChild; //maximum value of all valid states
+		return s.minMaxedChild;
 	}
 	
-	public State minValue (State s) {
-		if(s.terminalAI && s.terminalPlayer) { //should check if both booleans are true
-			s.minimax = utility(s);
-			return s;
+	//finds and returns the minimum (lowest) utility from the best maxValue child generated from getAIChildStates(s)
+	public int minValue (State s) {
+		//if terminalAI && terminalPlayer are true. return s.minimax = utility(s) and return s.minimax
+		if(s.terminalAI && s.terminalPlayer) {
+			//System.out.println("No More moves:"+(counter++));
+			return s.minimax = utility(s);
 		}
-		s.minimax = 100000;
-		s.childStates = getChildStatesMin(s);
 		
-		if(s.childStates.isEmpty()) {
-			s.terminalAI = true; //not yet. Need to make sure neither participant can make a move
-			//should set AI boolean true
-			s.childStates = getChildStatesMax(s);
-			for(State child: s.childStates) {
-				if(minValue(child).minimax > s.minimax) {
-					s.minMaxedChild = child;
-					s.minimax = child.minimax;
-				}
-			}
-		} else {
-			for(State child: s.childStates) {
-				if(maxValue(child).minimax < s.minimax) {
-					s.minMaxedChild = child;
-					s.minimax = child.minimax;
-				}
-			}
-		}
-		return s;
-	}
-	
-	public State maxValue (State s) {
-		if(s.terminalAI && s.terminalPlayer) { //should check if both booleans are true
-			s.minimax = utility(s);
-			return s;
-		}
-		s.minimax = -100000;
-		s.childStates = getChildStatesMax(s);
+		s.minimax = 10000;
 		
-		if(s.childStates.isEmpty()) {
-			s.childStates = getChildStatesMin(s);
-			for(State child: s.childStates) {
-				if(maxValue(child).minimax < s.minimax) {
-					s.minMaxedChild = child;
-					s.minimax = child.minimax;
-				}
-			}
-		} else {
-			for(State child: s.childStates) {
-				if(minValue(child).minimax > s.minimax) {
-					s.minMaxedChild = child;
-					s.minimax = child.minimax;
-				}
-			}
+		//if getPlayerChildStates(s) is null, terminalPlayer is true. call maxValue(s).
+		if(getPlayerChildStates(s).isEmpty()) {
+			s.terminalPlayer = true;
+			maxValue(s);
 		}
-		return s;
+		s.childStates = getPlayerChildStates(s);
+		
+		for(State child: s.childStates) {
+			
+//			System.out.println("Possible Move by Player: \n");
+//			child.printState();
+			
+			child.minimax = maxValue(child);
+			
+//			child.minimax = utility(child);
+			
+//			System.out.println(child.minimax+"\n");
+			
+			if(child.minimax < s.minimax) {
+				s.minMaxedChild = child;
+				s.minimax = child.minimax;
+			}
+			
+		}
+		return s.minimax;
 	}
 	
-	public ArrayList<State> getChildStatesMin(State s){
+	
+	//finds and returns the maximum (highest) utility from the best minValue child generated from getPlayerChildStates(s)
+	public int maxValue (State s) {
+		//if terminalAI && terminalPlayer are true. return s.minimax = utility(s) and return s.minimax
+		if(s.terminalAI && s.terminalPlayer) {
+			//System.out.println("No More moves:"+(counter++));
+			return s.minimax = utility(s);
+		}
+		
+		s.minimax = -10000;
+		
+		//if getAIChildStates(s) is null, terminalAI is true. call minValue(s).
+		if(getAIChildStates(s).isEmpty()) {
+			s.terminalAI = true;
+			minValue(s);
+		}
+		
+		s.childStates = getAIChildStates(s);
+		for(State child: s.childStates) {
+			
+//			System.out.println("Possible Move by AI: \n");
+//			child.printState();
+			
+			child.minimax = minValue(child);
+			
+//			child.minimax = utility(child);
+			
+//			System.out.println(child.minimax+"\n");
+			
+			
+			if(child.minimax > s.minimax) {
+				s.minMaxedChild = child;
+				s.minimax = child.minimax;
+			}
+			
+		}
+		
+		
+		return s.minimax;
+	}
+	
+
+
+	
+	//Obtains all the possible player moves from a state s.
+	public ArrayList<State> getPlayerChildStates(State s){
 		
 		for(int r = 0; r < boardWidth; r++) {
 			for(int c = 0; c < boardWidth; c++) {
-				if(s.checkValidity(r,c,player)) {
-					childState = copyBoard(s);
-					//childState = copyState(s);
-					childState.board[r][c] = player;
-					childState = childState.flipPieces(r,c,player);
-					s.childStates.add(childState);
+				childState = copyBoard(s);
+				if(childState.board[r][c] == 'e') {
+					if(childState.checkValidity(r,c,player)) {
+						
+						childState.board[r][c] = player;
+						childState = childState.flipPieces(r,c,player);
+						
+						s.childStates.add(childState);
+					}
 				}
+				
 			}
 		}
 		return s.childStates;
@@ -130,28 +173,21 @@ public class Game {
 		return temp;
 	}
 	
-	public ArrayList<State> getChildStatesMax(State s) {
-		//System.out.println("haha brrr ");
+	
+	//Obtains all the possible AI moves from a state s.
+	public ArrayList<State> getAIChildStates(State s) {
 		for(int r = 0; r < boardWidth; r++) {
 			for(int c = 0; c < boardWidth; c++) {
-				System.out.println("Testing "+c+":"+r+" with "+AI);
-				if(s.checkValidity(r,c,AI)) {
-					System.out.println("CurrentState: ");
-					s.printState();
-					//these getChildStates methods are applying a move to the next child instead of the state s
-					childState = copyBoard(s); //problematic statement is probably childState = s
-					//childState = copyState(s);
+				//System.out.println("Testing "+c+":"+r+" with "+AI);
+				childState = copyBoard(s);
+				if(childState.board[r][c] == 'e') {
+					if(childState.checkValidity(r,c,AI)) {
 					
-					childState.board[r][c] = AI;
-					//this line is first place where we see error. Most likely because childState is an alias of s.
-					//to remedy this entire problem, you can probably make a copyState method that takes the board and its other parameters.
+						childState.board[r][c] = AI;
+						childState = childState.flipPieces(r,c,AI);
 					
-					childState = childState.flipPieces(r,c,AI);
-					
-					System.out.println("CurrentState after applications: ");
-					s.printState();
-					
-					s.childStates.add(childState);
+						s.childStates.add(childState);
+					}
 				}
 			}
 		}
