@@ -9,8 +9,9 @@ public class Game {
 	public int minEval;
 	public int maxEval;
 	public Point bestPoint = new Point(-1,-1);
-	//public ArrayList<Point> childStates = new ArrayList<Point>();
 	public LinkedList<Point> childStates = new LinkedList<Point>();
+	
+	char[] letters = {'a','b','c','d','e','f','g','h'};
 	
 	
 	public Game(char player, char AI, int boardWidth) {
@@ -21,28 +22,103 @@ public class Game {
 		
 	}
 	
-	
-	
 	public void updateBoardPlayer(int row, int col, char color) {
 		currentState.board[row][col] = color;
 		currentState = currentState.flipPieces(row,col,color); //looks for any sandwich in direction and flips them
+		System.out.println("Current State After Your Move: \n");
 		currentState.printState();
 	}
 	public void updateBoardAI() {
-		//currentState = minimaxDecision(currentState);
-		
-		if(findBestChild(currentState) != null) {
-			currentState = findBestChild(currentState);
-		} else {
-			currentState = minimaxDecision(currentState);
-		}
+		currentState = minimaxDecision(currentState);
+		System.out.println("AI played " );
 		System.out.println("Current State After AI Move: \n");
 		currentState.printState();
 	}
-	public State findBestChild(State s) {
-		return s.minMaxedChild;
+	
+//	public char pointChar(Point p) {
+//		int c = -1;
+//		char[] letters = {'a','b','c','d','e','f','g','h'};
+//		for(char l: letters) {
+//			c++;
+//			if(col == l) {
+//				return c;
+//			}
+//		}
+//		return -1;
+//	}
+	
+	public void updateBoardAIAB() {
+		currentState = EightDecision(currentState);
+		System.out.println("AI played " );
+		System.out.println("Current State After AI Move: \n");
+		currentState.printState();
 	}
 
+	public State EightDecision(State position) {
+		position.minimax = Integer.MIN_VALUE;
+		temp = copyBoard(position);
+		childStates = getChildStates(temp, AI);
+
+		for(Point child: childStates) {
+			//child.printPoint();
+			temp = copyBoard(position);
+
+			tempMinimax = EightMiniMax(temp.flipPieces(child.x, child.y, AI), 3, Integer.MIN_VALUE, Integer.MAX_VALUE, player);
+
+			if(tempMinimax > position.minimax) {
+				currentState.printState();
+				bestPoint.x = child.x; bestPoint.y = child.y;
+				position.minimax = tempMinimax;
+				maxEval = tempMinimax;
+			}
+		}
+		position.minMaxedChild = currentState.flipPieces(bestPoint.x, bestPoint.y, AI);
+		return position.minMaxedChild;
+	}
+
+
+	public int EightMiniMax(State position, int depth, int alpha, int beta, char turn) {
+		if(depth == 0 || getTerminal(position, turn)) {
+			return position.minimax;
+		}
+		
+		if(turn == AI) {
+			int tempMax = Integer.MIN_VALUE;
+			temp = copyBoard(position);
+			childStates = getChildStates(temp, turn);
+			
+			for(Point c : childStates) {
+				State temp2 = copyBoard(position);
+				temp2.flipPieces(c.x, c.y, turn);
+				int eval = EightMiniMax(temp2, depth - 1, alpha, beta, player);
+				maxEval = Math.max(eval, tempMax);
+				alpha = Math.max(alpha, eval);
+				if(beta <= alpha) {
+					break;
+				}
+			}
+			return maxEval;
+
+		} else {
+			int tempMin = Integer.MAX_VALUE;
+			temp = copyBoard(position);
+			childStates = getChildStates(temp, turn);
+
+			for(Point c : childStates) {
+				State temp2 = copyBoard(position);
+				temp2.flipPieces(c.x, c.y, turn);
+				int eval = EightMiniMax(temp2, depth - 1, alpha, beta, AI);
+				maxEval = Math.min(eval, tempMin);
+				alpha = Math.min(beta, eval);
+				if(beta <= alpha) {
+					break;
+				}
+			}
+			return maxEval;
+		}
+	}
+	
+	
 	//functions as maxValue but is the first step and returns a state instead of the minimax utility
 	public State minimaxDecision(State s) {
 		s.minimax = -10000;
@@ -58,7 +134,7 @@ public class Game {
 			tempMinimax = minimax(temp.flipPieces(child.x, child.y, AI), player);
 			
 			if(tempMinimax > s.minimax) {
-				currentState.printState();
+				//currentState.printState();
 				bestPoint.x = child.x; bestPoint.y = child.y;
 				s.minimax = tempMinimax;
 				maxEval = tempMinimax;
@@ -220,3 +296,6 @@ public class Game {
 		return init;
 	}
 }
+
+
+
