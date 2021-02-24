@@ -108,7 +108,7 @@ public class Game {
 		for(int r = 0; r < boardWidth; r++) {
 			for(int c = 0; c < boardWidth; c++) {
 				if(s.checkValidity(r,c,player)) {
-					childState = s;
+					childState = copyBoard(s);
 					//childState = copyState(s);
 					childState.board[r][c] = player;
 					childState = childState.flipPieces(r,c,player);
