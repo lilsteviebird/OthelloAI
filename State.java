@@ -1,7 +1,6 @@
-
 import java.util.ArrayList;
 public class State {
-	public Space[][] board;
+	public char[][] board;
 	public int boardWidth;
 	public int minimax;
 	//public State parent;
@@ -9,7 +8,7 @@ public class State {
 	public boolean terminalAI, terminalPlayer; //should have terminalAI and terminalPlayer
 	public ArrayList<State> childStates;
 	
-	public State(Space[][] board, int minimax) {
+	public State(char[][] board, int minimax) {
 		this.board = board;
 		//this.parent = parent;
 		this.minimax = minimax;
@@ -25,33 +24,33 @@ public class State {
 //	public int getMinimax() { return minimax; }
 //	public void setMinimax(int minimax) { this.minimax = minimax; }
 	
-	public State flipPieces(int row, int col, String given) {
+	public State flipPieces(int row, int col, char given) {
+		System.out.println("Flipping->"+col+":"+row);
 		State returnMe = new State(board, minimax);
-		String opp = opponentCharacter(given);
 		//editing returnMe.board
 		if(checkRight(row, col, given)) {
 			Point end = flipRight(row, col, given);
 			for(int i = col; i <= end.getY(); i++) {
-				returnMe.board[row][i].setColor(opp);
+				board[row][i] = given;
 			}
 		}
 		if(checkLeft(row, col, given)) {
 			Point end = flipLeft(row, col, given);
 			for(int i = col; i >= end.getY(); i--) {
-				returnMe.board[row][i].setColor(opp);
+				returnMe.board[row][i] = given;
 			}
 			
 		}
 		if(checkUp(row, col, given)) {
 			Point end = flipUp(row, col, given);
-			for(int i = row; i >= end.getX(); i++) {
-				returnMe.board[i][col].setColor(opp);
+			for(int i = row; i >= end.getX(); i--) {
+				returnMe.board[i][col] = given;
 			}
 		}
 		if(checkDown(row, col, given)) {
 			Point end = flipDown(row, col, given);
-			for(int i = row; i < end.getX(); i++) {
-				returnMe.board[i][col].setColor(opp);
+			for(int i = row; i <= end.getX(); i++) {
+				returnMe.board[i][col] = given;
 			}
 		}
 		if(checkDiagTR(row, col, given)) {
@@ -59,7 +58,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol] = given;
 				tempRow--;
 				tempCol++;
 			}
@@ -69,7 +68,7 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol] = given;
 				tempRow--;
 				tempCol--;
 			}
@@ -79,17 +78,17 @@ public class State {
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol] = given;
 				tempRow++;
 				tempCol++;
 			}
 		}
 		if(checkDiagBL(row, col, given)) {
-			Point end = flipDiagTL(row, col, given);
+			Point end = flipDiagBL(row, col, given);
 			int tempRow = row;
 			int tempCol = col;
 			while(tempRow != end.getX() && tempCol != end.getY()) {
-				returnMe.board[tempRow][tempCol].setColor(opp);
+				returnMe.board[tempRow][tempCol] = given;
 				tempRow++;
 				tempCol--;
 			}
@@ -110,11 +109,11 @@ public class State {
 		for(int r = 0; r < boardWidth; r++) {
 			System.out.print(r+1 + " ");
 			for(int c = 0; c < boardWidth; c++) {
-				if(board[r][c].getColor().compareTo("x") == 0) {
+				if(board[r][c] == 'x') {
 					System.out.print("x ");
-				} else if(board[r][c].getColor().compareTo("o") == 0) {
+				} else if(board[r][c] == 'o') {
 					System.out.print("o ");
-				} else if(board[r][c].getColor().compareTo("empty") == 0) {
+				} else {
 					System.out.print("  ");
 				}
 			}
@@ -131,55 +130,55 @@ public class State {
 	
 	//flipPieces returns a State
 	
-	public String opponentCharacter(String given) {
-		if(given.equals("x")) {
-			return "o";
+	public char opponentCharacter(char given) {
+		if(given == 'x') {
+			return 'o';
 		}
-		return "x";
+		return 'x';
 	}
 
-	public boolean checkValidity(int row, int col, String given) {
+	public boolean checkValidity(int row, int col, char given) {
 		return (checkRight(row, col, given) || checkLeft(row, col, given) 
 				|| checkUp(row, col, given) || checkDown(row, col, given) 
 				|| checkDiagTR(row, col, given) || checkDiagTL(row, col, given)
 				|| checkDiagBR(row, col, given) || checkDiagBL(row, col, given));
 	}	
 
-	private boolean checkRight(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkRight(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
-			if(board[row][i].getColor().equals(opp)) {
+			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
-			if(board[row][i].getColor().equals(given)) {
+			if(board[row][i] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != col && seenOpp && board[row][here].getColor().equals(given)) {
+		if(here != col && seenOpp && board[row][here] == given) {
 			System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipRight(int row, int col, String given) {
+	private Point flipRight(int row, int col, char given) {
 		Point toHere = new Point(0, 0);
-		String opp = opponentCharacter(given);
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
-			if(board[row][i].getColor().equals(opp)) {
+			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
-			if(board[row][i].getColor().equals(given)) {
+			if(board[row][i] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != col && seenOpp && board[row][here].getColor().equals(given)) {
+		if(here != col && seenOpp && board[row][here] == given) {
 			System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
 			toHere.setX(row);
 			toHere.setY(here);
@@ -188,41 +187,41 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkLeft(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkLeft(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col - 1; i >= 0; i--) {
-			if(board[row][i].getColor().equals(opp)) {
+			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
-			if(board[row][i].getColor().equals(given)) {
+			if(board[row][i] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != col && seenOpp && board[row][here].getColor().equals(given)) {
+		if(here != col && seenOpp && board[row][here] == given) {
 			System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipLeft(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipLeft(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0, 0);
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col - 1; i >= 0; i--) {
-			if(board[row][i].getColor().equals(opp)) {
+			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
-			if(board[row][i].getColor().equals(given)) {
+			if(board[row][i] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != col && seenOpp && board[row][here].getColor().equals(given)) {
+		if(here != col && seenOpp && board[row][here] == given) {
 			System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
 			toHere.setX(row);
 			toHere.setY(here);
@@ -231,42 +230,42 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkUp(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkUp(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row - 1; i >= 0; i--) {
-			if(board[i][col].getColor().equals(opp)) {
+			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
-			if(board[i][col].getColor().equals(given)) {
+			if(board[i][col] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != row && seenOpp && board[here][col].getColor().equals(given)) {
+		if(here != row && seenOpp && board[here][col] == given) {
 			System.out.println("UP: VALID MOVE AT: (" + here + "," + col + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipUp(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipUp(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0, 0);
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row - 1; i >= 0; i--) {
-			if(board[i][col].getColor().equals(opp)) {
+			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
-			if(board[i][col].getColor().equals(given)) {
+			if(board[i][col] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != row && seenOpp && board[here][col].getColor().equals(given)) {
-			System.out.println("UP: VALID MOVE AT: (" + here + "," + col + ")");
+		if(here != row && seenOpp && board[here][col] == given) {
+			System.out.println("UP: FLIPPED MOVE AT: (" + here + "," + col + ")");
 			toHere.setX(here);
 			toHere.setY(col);
 			return toHere;
@@ -274,41 +273,41 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkDown(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkDown(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row + 1; i < boardWidth; i++) {
-			if(board[i][col].getColor().equals(opp)) {
+			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
-			if(board[i][col].getColor().equals(given)) {
+			if(board[i][col] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != row && seenOpp && board[here][col].getColor().equals(given)) {
+		if(here != row && seenOpp && board[here][col] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipDown(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipDown(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0, 0);
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row + 1; i < boardWidth; i++) {
-			if(board[i][col].getColor().equals(opp)) {
+			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
-			if(board[i][col].getColor().equals(given)) {
+			if(board[i][col] == given) {
 				here = i;
 				break;
 			}
 		}
-		if(here != row && seenOpp && board[here][col].getColor().equals(given)) {
+		if(here != row && seenOpp && board[here][col] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
 			toHere.setX(here);
 			toHere.setY(col);
@@ -317,47 +316,50 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkDiagTR(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkDiagTR(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int tempRow = row - 1;
 		int tempCol = col + 1;
 
 		while(tempRow >= 0 && tempCol < boardWidth) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow--;
 			tempCol++;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow==-1 || tempCol==boardWidth) {
+			return false;
+		}
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipDiagTR(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipDiagTR(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0 ,0);
 		boolean seenOpp = false;
 		int tempRow = row - 1;
 		int tempCol = col + 1;
 
 		while(tempRow >= 0 && tempCol < boardWidth) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow--;
 			tempCol++;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
@@ -366,47 +368,50 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkDiagTL(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkDiagTL(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int tempRow = row - 1;
 		int tempCol = col - 1;
 
 		while(tempRow >= 0 && tempCol >= 0) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow--;
 			tempCol--;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow==-1 || tempCol==-1) {
+			return false;
+		}
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipDiagTL(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipDiagTL(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0 ,0);
 		boolean seenOpp = false;
 		int tempRow = row - 1;
 		int tempCol = col - 1;
 
 		while(tempRow >= 0 && tempCol >= 0) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow--;
 			tempCol--;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
@@ -415,47 +420,50 @@ public class State {
 		return toHere;
 	}
 	
-	private boolean checkDiagBR(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkDiagBR(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int tempRow = row + 1;
 		int tempCol = col + 1;
 
 		while(tempRow < boardWidth && tempCol < boardWidth) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow++;
 			tempCol++;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow==boardWidth || tempCol==boardWidth) {
+			return false;
+		}
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipDiagBR(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipDiagBR(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0, 0);
 		boolean seenOpp = false;
 		int tempRow = row + 1;
 		int tempCol = col + 1;
 
 		while(tempRow < boardWidth && tempCol < boardWidth) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow++;
 			tempCol++;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
@@ -464,47 +472,50 @@ public class State {
 		return toHere;
 	}
 
-	private boolean checkDiagBL(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private boolean checkDiagBL(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		boolean seenOpp = false;
 		int tempRow = row + 1;
 		int tempCol = col - 1;
 		
 		while(tempRow < boardWidth && tempCol >= 0) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow++;
 			tempCol--;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow==boardWidth || tempCol==-1) {
+			return false;
+		}
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
 	}
 	
-	private Point flipDiagBL(int row, int col, String given) {
-		String opp = opponentCharacter(given);
+	private Point flipDiagBL(int row, int col, char given) {
+		char opp = opponentCharacter(given);
 		Point toHere = new Point(0, 0);
 		boolean seenOpp = false;
 		int tempRow = row + 1;
 		int tempCol = col - 1;
 		
 		while(tempRow < boardWidth && tempCol >= 0) {
-			if(board[tempRow][tempCol].getColor().equals(opp)) {
+			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
-			if(board[tempRow][tempCol].getColor().equals(given)) {
+			if(board[tempRow][tempCol] == given) {
 				break;
 			}
 			tempRow++;
 			tempCol--;
 		}
-		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
+		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
