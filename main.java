@@ -37,7 +37,6 @@ public class main {
 				col = letterToNumber(input.charAt(0));
 				row = Character.getNumericValue(input.charAt(1))-1;
 				
-				System.out.println(input.charAt(0)+" "+row);
 				playerMove(g1, row, col);
 				playerTurn = false;
 				System.out.println("AI's Turn");
@@ -46,6 +45,7 @@ public class main {
 			} else {
 				AIMove(g1);
 				playerTurn = true;
+				System.out.println("Your Turn");
 			}
 		}
 		
@@ -54,9 +54,10 @@ public class main {
 		
 	}
 	public static void playerMove(Game g, int moveRow, int moveCol) {
-		System.out.println("validity check");
 		if(g.currentState.checkValidity(moveRow, moveCol, player)) {
 			g.updateBoardPlayer(moveRow, moveCol, player);
+		} else {
+			System.out.println("That was a bad input");
 		}
 	}
 	public static void AIMove(Game g) {
