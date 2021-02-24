@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+
 public class State {
 	public char[][] board;
 	public int boardWidth;
@@ -25,13 +26,13 @@ public class State {
 //	public void setMinimax(int minimax) { this.minimax = minimax; }
 	
 	public State flipPieces(int row, int col, char given) {
-		System.out.println("Flipping->"+col+":"+row);
+		//System.out.println("Flipping->"+col+":"+row);
 		State returnMe = new State(board, minimax);
 		//editing returnMe.board
 		if(checkRight(row, col, given)) {
 			Point end = flipRight(row, col, given);
 			for(int i = col; i <= end.getY(); i++) {
-				board[row][i] = given;
+				returnMe.board[row][i] = given;
 			}
 		}
 		if(checkLeft(row, col, given)) {
@@ -124,7 +125,7 @@ public class State {
 		for(int len = 0; len < boardWidth; len++) {
 			System.out.print(letters[len]+ " ");
 		}
-		System.out.println();
+		System.out.println("\n");
 		
 	}
 	
@@ -149,6 +150,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
+//			if(board[row][i] == 'e') {
+//				break;
+//			}
 			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
@@ -158,7 +162,7 @@ public class State {
 			}
 		}
 		if(here != col && seenOpp && board[row][here] == given) {
-			System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
+			//System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
 			return true;
 		}
 		return false;
@@ -179,7 +183,7 @@ public class State {
 			}
 		}
 		if(here != col && seenOpp && board[row][here] == given) {
-			System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
+			//System.out.println("Right: VALID MOVE AT: (" + row + "," + here + ")");
 			toHere.setX(row);
 			toHere.setY(here);
 			return toHere;
@@ -201,7 +205,7 @@ public class State {
 			}
 		}
 		if(here != col && seenOpp && board[row][here] == given) {
-			System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
+			//System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
 			return true;
 		}
 		return false;
@@ -222,7 +226,7 @@ public class State {
 			}
 		}
 		if(here != col && seenOpp && board[row][here] == given) {
-			System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
+			//System.out.println("Left: VALID MOVE AT: (" + row + "," + here + ")");
 			toHere.setX(row);
 			toHere.setY(here);
 			return toHere;
@@ -244,7 +248,7 @@ public class State {
 			}
 		}
 		if(here != row && seenOpp && board[here][col] == given) {
-			System.out.println("UP: VALID MOVE AT: (" + here + "," + col + ")");
+			//System.out.println("UP: VALID MOVE AT: (" + here + "," + col + ")");
 			return true;
 		}
 		return false;
@@ -265,7 +269,7 @@ public class State {
 			}
 		}
 		if(here != row && seenOpp && board[here][col] == given) {
-			System.out.println("UP: FLIPPED MOVE AT: (" + here + "," + col + ")");
+			//System.out.println("UP: FLIPPED MOVE AT: (" + here + "," + col + ")");
 			toHere.setX(here);
 			toHere.setY(col);
 			return toHere;
@@ -287,7 +291,7 @@ public class State {
 			}
 		}
 		if(here != row && seenOpp && board[here][col] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
 			return true;
 		}
 		return false;
@@ -308,7 +312,7 @@ public class State {
 			}
 		}
 		if(here != row && seenOpp && board[here][col] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + here + "," + col + ")");
 			toHere.setX(here);
 			toHere.setY(col);
 			return toHere;
@@ -336,7 +340,7 @@ public class State {
 			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
@@ -360,7 +364,7 @@ public class State {
 			tempCol++;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
 			return toHere;
@@ -388,7 +392,7 @@ public class State {
 			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
@@ -412,7 +416,7 @@ public class State {
 			tempCol--;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
 			return toHere;
@@ -440,7 +444,7 @@ public class State {
 			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
@@ -464,7 +468,7 @@ public class State {
 			tempCol++;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
 			return toHere;
@@ -492,7 +496,7 @@ public class State {
 			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
 		}
 		return false;
@@ -516,7 +520,7 @@ public class State {
 			tempCol--;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol] == given) {
-			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
+			//System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			toHere.setX(tempRow);
 			toHere.setY(tempCol);
 			return toHere;
