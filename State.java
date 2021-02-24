@@ -1,13 +1,9 @@
-import java.util.ArrayList;
-
 public class State {
 	public char[][] board;
 	public int boardWidth;
 	public int minimax;
-	//public State parent;
 	public State minMaxedChild;
 	public boolean terminalAI, terminalPlayer; //should have terminalAI and terminalPlayer
-	public ArrayList<State> childStates;
 	
 	public State(char[][] board, int minimax) {
 		this.board = board;
@@ -17,16 +13,9 @@ public class State {
 		terminalAI = false;
 		terminalPlayer = false;
 		boardWidth = board.length;
-		childStates = new ArrayList<State>();
 	}
-
-//	public boolean isTerminal() { return terminal; }
-//	public void setTerminal(boolean terminal) { this.terminal = terminal; }
-//	public int getMinimax() { return minimax; }
-//	public void setMinimax(int minimax) { this.minimax = minimax; }
 	
 	public State flipPieces(int row, int col, char given) {
-		//System.out.println("Flipping->"+col+":"+row);
 		State returnMe = new State(board, minimax);
 		//editing returnMe.board
 		if(checkRight(row, col, given)) {
@@ -150,9 +139,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
-//			if(board[row][i] == 'e') {
-//				break;
-//			}
+			if(board[row][i] == 'e') {
+				break;
+			}
 			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
@@ -174,6 +163,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
+			if(board[row][i] == 'e') {
+				break;
+			}
 			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
@@ -196,6 +188,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col - 1; i >= 0; i--) {
+			if(board[row][i] == 'e') {
+				break;
+			}
 			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
@@ -217,6 +212,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col - 1; i >= 0; i--) {
+			if(board[row][i] == 'e') {
+				break;
+			}
 			if(board[row][i] == opp) {
 				seenOpp = true;
 			}
@@ -239,6 +237,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row - 1; i >= 0; i--) {
+			if(board[i][col] == 'e') {
+				break;
+			}
 			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
@@ -260,6 +261,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row - 1; i >= 0; i--) {
+			if(board[i][col] == 'e') {
+				break;
+			}
 			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
@@ -282,6 +286,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row + 1; i < boardWidth; i++) {
+			if(board[i][col] == 'e') {
+				break;
+			}
 			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
@@ -303,6 +310,9 @@ public class State {
 		boolean seenOpp = false;
 		int here = row;
 		for(int i = row + 1; i < boardWidth; i++) {
+			if(board[i][col] == 'e') {
+				break;
+			}
 			if(board[i][col] == opp) {
 				seenOpp = true;
 			}
@@ -327,6 +337,9 @@ public class State {
 		int tempCol = col + 1;
 
 		while(tempRow >= 0 && tempCol < boardWidth) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -354,6 +367,9 @@ public class State {
 		int tempCol = col + 1;
 
 		while(tempRow >= 0 && tempCol < boardWidth) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -379,6 +395,9 @@ public class State {
 		int tempCol = col - 1;
 
 		while(tempRow >= 0 && tempCol >= 0) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -406,6 +425,9 @@ public class State {
 		int tempCol = col - 1;
 
 		while(tempRow >= 0 && tempCol >= 0) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -431,6 +453,9 @@ public class State {
 		int tempCol = col + 1;
 
 		while(tempRow < boardWidth && tempCol < boardWidth) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -458,6 +483,9 @@ public class State {
 		int tempCol = col + 1;
 
 		while(tempRow < boardWidth && tempCol < boardWidth) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -483,6 +511,9 @@ public class State {
 		int tempCol = col - 1;
 		
 		while(tempRow < boardWidth && tempCol >= 0) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
@@ -510,6 +541,9 @@ public class State {
 		int tempCol = col - 1;
 		
 		while(tempRow < boardWidth && tempCol >= 0) {
+			if(board[tempRow][tempCol] == 'e') {
+				break;
+			}
 			if(board[tempRow][tempCol] == opp) {
 				seenOpp = true;
 			}
