@@ -35,13 +35,14 @@ public class main {
 				System.out.println("What would you like your next move to be: ");
 				input = scanner.next();
 				col = letterToNumber(input.charAt(0));
-				row = Character.getNumericValue(input.charAt(1));
+				row = Character.getNumericValue(input.charAt(1)) - 1;
 				
 				System.out.println(col+" "+row);
 				playerMove(g1, row, col);
 				playerTurn = false;
 			} else {
 				AIMove(g1);
+				playerTurn = true;
 			}
 		}
 		

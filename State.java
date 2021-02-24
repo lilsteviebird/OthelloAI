@@ -44,13 +44,13 @@ public class State {
 		}
 		if(checkUp(row, col, given)) {
 			Point end = flipUp(row, col, given);
-			for(int i = row; i >= end.getX(); i++) {
+			for(int i = row; i >= end.getX(); i--) {
 				returnMe.board[i][col].setColor(opp);
 			}
 		}
 		if(checkDown(row, col, given)) {
 			Point end = flipDown(row, col, given);
-			for(int i = row; i < end.getX(); i++) {
+			for(int i = row; i <= end.getX(); i++) {
 				returnMe.board[i][col].setColor(opp);
 			}
 		}
@@ -139,14 +139,16 @@ public class State {
 	}
 
 	public boolean checkValidity(int row, int col, String given) {
-		return (checkRight(row, col, given) || checkLeft(row, col, given) 
-				|| checkUp(row, col, given) || checkDown(row, col, given) 
-				|| checkDiagTR(row, col, given) || checkDiagTL(row, col, given)
-				|| checkDiagBR(row, col, given) || checkDiagBL(row, col, given));
+//		return (checkRight(row, col, given) || checkLeft(row, col, given) 
+//				|| checkUp(row, col, given) || checkDown(row, col, given) 
+//				|| checkDiagTR(row, col, given) || checkDiagTL(row, col, given)
+//				|| checkDiagBR(row, col, given) || checkDiagBL(row, col, given));
+		return checkDown(row, col, given);
 	}	
 
 	private boolean checkRight(int row, int col, String given) {
 		String opp = opponentCharacter(given);
+		System.out.println("LOOK HERE: " + given);
 		boolean seenOpp = false;
 		int here = col;
 		for(int i = col + 1; i < boardWidth; i++) {
@@ -333,6 +335,9 @@ public class State {
 			tempRow--;
 			tempCol++;
 		}
+		if(tempRow == -1 || tempCol == 4) {
+			return false;
+		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
@@ -381,6 +386,9 @@ public class State {
 			}
 			tempRow--;
 			tempCol--;
+		}
+		if(tempRow == -1 || tempCol == -1) {
+			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
@@ -431,6 +439,9 @@ public class State {
 			tempRow++;
 			tempCol++;
 		}
+		if(tempRow == boardWidth || tempCol == boardWidth) {
+			return false;
+		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
 			return true;
@@ -479,6 +490,9 @@ public class State {
 			}
 			tempRow++;
 			tempCol--;
+		}
+		if(tempRow == boardWidth || tempCol == -1) {
+			return false;
 		}
 		if(tempRow != row && tempCol != col && seenOpp && board[tempRow][tempCol].getColor().equals(given)) {
 			System.out.println("Down: VALID MOVE AT: (" + tempRow + "," + tempCol + ")");
