@@ -9,6 +9,7 @@ public class Game {
 	public int tempMinimax = 0;
 	public int minEval;
 	public int maxEval;
+	public Point bestPoint = new Point(-1,-1);
 	//public ArrayList<Point> childStates = new ArrayList<Point>();
 	public LinkedList<Point> childStates = new LinkedList<Point>();
 	
@@ -70,12 +71,12 @@ public class Game {
 			
 			if(tempMinimax > s.minimax) {
 				currentState.printState();
-				s.minMaxedChild = currentState.flipPieces(child.x, child.y, AI);
+				bestPoint.x = child.x; bestPoint.y = child.y;
 				s.minimax = tempMinimax;
 				maxEval = tempMinimax;
 			}
-			
 		}
+		s.minMaxedChild = currentState.flipPieces(bestPoint.x, bestPoint.y, AI);
 		return s.minMaxedChild;
 	}
 	
